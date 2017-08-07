@@ -1,0 +1,28 @@
+{
+    "stocks": [
+        {
+          "stock": "BBVA",
+          "titles": 500,
+          "paid": 1000,
+          "url": "https://api.finect.com/v2/market/equities/6f254240/prices"
+        },
+        {
+          "stock": "Iberdrola",
+          "titles": 400,
+          "paid": 1000.50,
+          "url": "https://api.finect.com/v2/market/equities/6f2cd611/prices"
+        },
+        {
+          "stock": "Repsol",
+          "titles": 300,
+          "paid": 2000.20,
+          "url": "https://api.finect.com/v2/market/equities/6f1ef8a3/prices"
+        },
+        {
+          "stock": "Telefonica",
+          "titles": 200,
+          "paid": 3000.05,
+          "url": "https://api.finect.com/v2/market/equities/6f2ab4e1/prices"
+        }
+    ]
+}
