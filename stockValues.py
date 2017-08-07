@@ -11,12 +11,10 @@ timeBefore = timeNow - timeDelta
 
 path = "./"
 if sys.platform == "linux4":
-    path = "/storage/emulated/0/qpython/scripts"
+    path = "/storage/emulated/0/qpython/scripts/"
 
 with open(path + 'stocks.json') as data_file:    
     data = json.load(data_file)
-
-#data = json.loads(myStocks)
 
 templateText = "{0:20}|{1:12}|{2:12}|{3:12}" 
 print templateText.format("Name", "Paid", "Value", "Difference")
@@ -31,17 +29,10 @@ for elem in data['stocks']:
     url = elem['url']
 
     myUrl = url + "?startDate=" + str(timeBefore.year) + "-" + str(timeBefore.month) + "-" + str(timeBefore.day) +"&endDate=" + str(timeNow.year) + "-" + str(timeNow.month) + "-" + str(timeNow.day)
-    
-#    print myUrl
-
 
     try:
         response = requests.get(myUrl)
         response.raise_for_status()
-#        print response.json()
-
-#        print response.status_code
-#        print response.headers['content-type']
 
         values = response.json()
 
@@ -56,16 +47,14 @@ for elem in data['stocks']:
                 datetime_value = new_datetime_value
                 theValue = new_value
 
-#        print datetime_value
-#        print theValue
-#        print "%s:\tpaid: %f\tvalue: %f\tDifference: %f"%(elem['stock'], elem['paid'], float(theValue) * elem['titles'], float(theValue) * elem['titles'] - elem['paid'])
         currentInvestmentValue = float(theValue) * elem['titles']
         gain = float(theValue) * elem['titles'] - elem['paid']
         stockPaidPrice = (elem['paid']/elem['titles'])
         gainPerc = (gain*100)/elem['paid']
+
         print template.format(elem['stock'], elem['paid'], currentInvestmentValue, gain)
         print templatePerc.format(datetime_value.strftime("%Y-%m-%d"), stockPaidPrice, float(theValue), gainPerc)
-        # print elem['paid']
+
         paidTotal = paidTotal + elem['paid']
         valueTotal = valueTotal + float(theValue) * elem['titles']
         diffTotal = diffTotal + float(theValue) * elem['titles'] - elem['paid']
@@ -79,5 +68,3 @@ print template.format("TOTAL:", paidTotal, valueTotal, diffTotal)
 templateSummary = "{0:46}|{1:12.2f}%" 
 print templateSummary.format("      ",float((diffTotal*100)/paidTotal))
 
-
-#"https://api.finect.com/v2/market/equities/6f254240/prices?startDate=2017-04-20&endDate=2017-07-20"
