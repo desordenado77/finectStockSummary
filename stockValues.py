@@ -4,6 +4,7 @@ import datetime
 from datetime import timedelta
 from datetime import datetime
 import sys
+import os
 
 timeDelta = timedelta(days=7)
 timeNow = datetime.now()
@@ -15,13 +16,16 @@ if sys.platform == "linux4":
 
 with open(path + 'stocks.json') as data_file:    
     data = json.load(data_file)
-
+historyPath = path + "stockHistory/"
+if not os.path.exists(historyPath):
+    os.makedirs(historyPath)
+    
 templateText = "{0:20}|{1:12}|{2:12}|{3:12}" 
-print templateText.format("Name", "Paid", "Value", "Difference")
+print templateText.format("Name", " Paid", " Value", " Difference")
 line = "-------------------------------------------------------------" 
 print line
 template = "{0:20}|{1:12.2f}|{2:12.2f}|{3:12.2f}" 
-templatePerc = "{0:20}|{1:12.2f}|{2:12.2f}|{3:12.2f}%" 
+templatePerc = "{0:20}|{1:12.2f}|{2:12.2f}|{3:11.2f}%" 
 paidTotal = 0
 valueTotal = 0
 diffTotal = 0
@@ -60,11 +64,14 @@ for elem in data['stocks']:
         diffTotal = diffTotal + float(theValue) * elem['titles'] - elem['paid']
         
         print line
+        
+        with open(historyPath + elem['stock'].replace(" ", "_")+".csv",'ab') as file:
+            file.write(datetime_value.strftime("%Y-%m-%d") + ","+theValue+'\n')
 
     except requests.exceptions.HTTPError as error:
         print(error.response.status_code, error.response.text)
 
 print template.format("TOTAL:", paidTotal, valueTotal, diffTotal)
-templateSummary = "{0:46}|{1:12.2f}%" 
+templateSummary = "{0:46}|{1:11.2f}%" 
 print templateSummary.format("      ",float((diffTotal*100)/paidTotal))
 
