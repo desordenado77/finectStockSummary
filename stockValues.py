@@ -6,6 +6,11 @@ from datetime import datetime
 import sys
 import os
 
+class bcolors:
+    GREEN = '\033[92m'
+    RED = '\033[91m'
+    ENDC = '\033[0m'
+    
 timeDelta = timedelta(days=7)
 timeNow = datetime.now()
 timeBefore = timeNow - timeDelta
@@ -55,15 +60,19 @@ for elem in data['stocks']:
         gain = float(theValue) * elem['titles'] - elem['paid']
         stockPaidPrice = (elem['paid']/elem['titles'])
         gainPerc = (gain*100)/elem['paid']
-
-        print template.format(elem['stock'], elem['paid'], currentInvestmentValue, gain)
-        print templatePerc.format(datetime_value.strftime("%Y-%m-%d"), stockPaidPrice, float(theValue), gainPerc)
-
+        
+        color = bcolors.RED
+        if gain > 0 :
+            color = bcolors.GREEN
+            
+        print color + template.format(elem['stock'], elem['paid'], currentInvestmentValue, gain)
+        print color + templatePerc.format(datetime_value.strftime("%Y-%m-%d"), stockPaidPrice, float(theValue), gainPerc)
+        
         paidTotal = paidTotal + elem['paid']
         valueTotal = valueTotal + float(theValue) * elem['titles']
         diffTotal = diffTotal + float(theValue) * elem['titles'] - elem['paid']
         
-        print line
+        print bcolors.ENDC + line
         
         with open(historyPath + elem['stock'].replace(" ", "_")+".csv",'ab') as file:
             file.write(datetime_value.strftime("%Y-%m-%d") + ","+theValue+'\n')
@@ -71,7 +80,10 @@ for elem in data['stocks']:
     except requests.exceptions.HTTPError as error:
         print(error.response.status_code, error.response.text)
 
-print template.format("TOTAL:", paidTotal, valueTotal, diffTotal)
+color = bcolors.RED
+if diffTotal > 0 :
+    color = bcolors.GREEN
+print color + template.format("TOTAL:", paidTotal, valueTotal, diffTotal)
 templateSummary = "{0:46}|{1:11.2f}%" 
-print templateSummary.format("      ",float((diffTotal*100)/paidTotal))
+print templateSummary.format("      ",float((diffTotal*100)/paidTotal)) + bcolors.ENDC
 
