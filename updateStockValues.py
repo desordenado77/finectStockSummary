@@ -4,20 +4,12 @@ import shutil
 
 
 project_url = "https://raw.githubusercontent.com/desordenado77/finectStockSummary/master/"
-stock_values_file_name = "stockValues.py"
-old_stock_values_file_name = "stockValuesOld.py"
-
-stock_history_file_name = "stockHistory.py"
-old_stock_history_file_name = "stockHistoryOld.py"
-
-updater_file_name = "updateStockValues.py"
-old_updater_file_name = "updateStockValuesOld.py"
 
 path = "./"
 if sys.platform == "linux4":
     path = "/storage/emulated/0/qpython/scripts/"
 
-fileList = ["stockValues.py", "updateStockValues.py" ]  
+fileList = ["stockValues.py", "stockHistory.py", "updateStockValues.py" ]  
 
 for element in fileList:    
     try:
