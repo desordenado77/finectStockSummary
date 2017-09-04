@@ -7,6 +7,9 @@ project_url = "https://raw.githubusercontent.com/desordenado77/finectStockSummar
 stock_values_file_name = "stockValues.py"
 old_stock_values_file_name = "stockValuesOld.py"
 
+stock_history_file_name = "stockHistory.py"
+old_stock_history_file_name = "stockHistoryOld.py"
+
 updater_file_name = "updateStockValues.py"
 old_updater_file_name = "updateStockValuesOld.py"
 
