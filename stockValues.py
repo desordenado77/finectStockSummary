@@ -11,7 +11,7 @@ class bcolors:
     RED = '\033[91m'
     ENDC = '\033[0m'
     
-timeDelta = timedelta(days=14)
+timeDelta = timedelta(days=20)
 timeNow = datetime.now()
 timeBefore = timeNow - timeDelta
 
