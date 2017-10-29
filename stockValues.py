@@ -9,11 +9,10 @@ import os
 class bcolors:
     GREEN = '\033[92m'
     RED = '\033[91m'
+    YELLOW = '\033[33m'
     ENDC = '\033[0m'
     
-timeDelta = timedelta(days=20)
-timeNow = datetime.now()
-timeBefore = timeNow - timeDelta
+timeDelta = timedelta(days=7)
 
 path = "./"
 if sys.platform == "linux4":
@@ -37,45 +36,59 @@ diffTotal = 0
 for elem in data['stocks']:
     url = elem['url']
 
-    myUrl = url + "?startDate=" + str(timeBefore.year) + "-" + str(timeBefore.month) + "-" + str(timeBefore.day) +"&endDate=" + str(timeNow.year) + "-" + str(timeNow.month) + "-" + str(timeNow.day)
+#    myUrl = url + "?startDate=" + str(timeBefore.year) + "-" + str(timeBefore.month) + "-" + str(timeBefore.day) +"&endDate=" + str(timeNow.year) + "-" + str(timeNow.month) + "-" + str(timeNow.day)
 
     try:
-        response = requests.get(myUrl)
-        response.raise_for_status()
+        values = []
+        timeNow = datetime.now()
 
-        values = response.json()
-
-        datetime_value = datetime.strptime("1977-01-01", '%Y-%m-%d')
-        theValue = 0
-
-
-        for value in response.json():
-            new_datetime_value = datetime.strptime(value['date'], '%Y-%m-%d')
-            new_value = value['value']
-            if new_datetime_value > datetime_value:
-                datetime_value = new_datetime_value
-                theValue = new_value
-
-        currentInvestmentValue = float(theValue) * elem['titles']
-        gain = float(theValue) * elem['titles'] - elem['paid']
-        stockPaidPrice = (elem['paid']/elem['titles'])
-        gainPerc = (gain*100)/elem['paid']
+        while values == [] and (datetime.now()-timeNow)<timedelta(days=45):
+            timeBefore = timeNow - timeDelta
         
-        color = bcolors.RED
-        if gain > 0 :
-            color = bcolors.GREEN
+            myUrl = url + "?startDate=" + str(timeBefore.year) + "-" + str(timeBefore.month) + "-" + str(timeBefore.day) +"&endDate=" + str(timeNow.year) + "-" + str(timeNow.month) + "-" + str(timeNow.day)
+            response = requests.get(myUrl)
+            response.raise_for_status()
+
+            values = response.json()
+            timeNow = timeBefore
+
+        if values != []:
+            datetime_value = datetime.strptime("1977-01-01", '%Y-%m-%d')
+            theValue = 0
+
+
+            for value in response.json():
+                new_datetime_value = datetime.strptime(value['date'], '%Y-%m-%d')
+                new_value = value['value']
+                if new_datetime_value > datetime_value:
+                    datetime_value = new_datetime_value
+                    theValue = new_value
+
+            currentInvestmentValue = float(theValue) * elem['titles']
+            gain = float(theValue) * elem['titles'] - elem['paid']
+            stockPaidPrice = (elem['paid']/elem['titles'])
+            gainPerc = (gain*100)/elem['paid']
             
-        print color + template.format(elem['stock'], elem['paid'], currentInvestmentValue, gain)
-        print color + templatePerc.format(datetime_value.strftime("%Y-%m-%d"), stockPaidPrice, float(theValue), gainPerc)
-        
-        paidTotal = paidTotal + elem['paid']
-        valueTotal = valueTotal + float(theValue) * elem['titles']
-        diffTotal = diffTotal + float(theValue) * elem['titles'] - elem['paid']
-        
-        print bcolors.ENDC + line
-        
-        with open(historyPath + elem['stock'].replace(" ", "_")+".csv",'ab') as file:
-            file.write(datetime_value.strftime("%Y-%m-%d") + ","+theValue+'\n')
+            color = bcolors.RED
+            if gain > 0 :
+                color = bcolors.GREEN
+                
+            print color + template.format(elem['stock'], elem['paid'], currentInvestmentValue, gain)
+            print color + templatePerc.format(datetime_value.strftime("%Y-%m-%d"), stockPaidPrice, float(theValue), gainPerc)
+            
+            paidTotal = paidTotal + elem['paid']
+            valueTotal = valueTotal + float(theValue) * elem['titles']
+            diffTotal = diffTotal + float(theValue) * elem['titles'] - elem['paid']
+            
+            print bcolors.ENDC + line
+            
+            with open(historyPath + elem['stock'].replace(" ", "_")+".csv",'ab') as file:
+                file.write(datetime_value.strftime("%Y-%m-%d") + ","+theValue+'\n')
+        else :
+            color = bcolors.YELLOW
+            print color + elem['stock']
+            print color + "Unable to retrieve values"
+            print bcolors.ENDC + line
 
     except requests.exceptions.HTTPError as error:
         print(error.response.status_code, error.response.text)
