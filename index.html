@@ -1,0 +1,70 @@
+<head>
+  <!-- Plotly.js -->
+  <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+  <script src="plotly-latest.min.js"></script>
+  <script src="stockHistory.js"></script>
+</head>
+
+<body>
+  
+
+
+<select id="selectId" onchange="startNewGraph.call(this, event)">
+</select>
+
+  <div id="myDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
+  <script>
+
+select = document.getElementById('selectId');
+
+for (var i = 0; i<stocks.length; i++){
+    var opt = document.createElement('option');
+    opt.value = i;
+    opt.innerHTML = stocks[i];
+    select.appendChild(opt);
+}
+
+
+function startNewGraph(event) {
+    plotStock(this.options[this.selectedIndex].value);
+}
+
+
+function plotStock(num) {
+Name = stocks[num];
+Plotly.d3.csv(Name+".csv", function(err, rows){
+
+  function unpack(rows, key) {
+  return rows.map(function(row) { return row[key]; });
+}
+
+
+var trace1 = {
+  type: "scatter",
+  mode: "lines",
+  name: Name,
+  x: unpack(rows, 'Date'),
+  y: unpack(rows, 'Value')
+}
+var len = unpack(rows, 'Value').length
+var paid = Array(len).fill(paidVal[num])
+
+var trace2 = {
+  type: "scatter",
+  mode: "lines",
+  name: 'Paid',
+  x: unpack(rows, 'Date'),
+  y: paid,
+}
+
+var data = [trace1, trace2];
+
+var layout = {
+  title: Name,
+};
+
+Plotly.newPlot('myDiv', data, layout);
+})
+}
+  </script>
+</body>

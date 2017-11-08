@@ -3,27 +3,43 @@ import sys
 import os
 import shutil
 
-# ap comes from https://github.com/mfouesneau/asciiplot
-# I am using c54956d0be3a44d82e03465924e3a44f17dc4ac5
-import ap, numpy as np
 import datetime
 
+import string,cgi,time
+from os import curdir, sep
+from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 
-def drawGraph(x, y=None, marker=None, shape=(75, 15), draw_axes=True,
-         newline='\n', plot_slope=False, x_margin=0.05,
-         y_margin=0.1, plot_labels=True, xlim=None, ylim=None):
-    flags = {'shape': shape,
-             'draw_axes': draw_axes,
-             'newline': newline,
-             'marker': marker,
-             'plot_slope': plot_slope,
-             'margins': (x_margin, y_margin),
-             'plot_labels': plot_labels }
 
-    p = ap.AFigure(**flags)
 
-    print p.plot(x, y, marker=marker, plot_slope=plot_slope, xlim=xlim, ylim=ylim).encode('utf-8')
+class MyHandler(BaseHTTPRequestHandler):
+
+    def do_GET(self):
+        try:
+            if self.path.endswith(".html") or self.path.endswith(".js") :
+                f = open(curdir + sep + self.path) #self.path has /test.html
+#note that this potentially makes every file on your computer readable by the internet
+
+                self.send_response(200)
+                self.send_header('Content-type',    'text/html')
+                self.end_headers()
+                self.wfile.write(f.read())
+                f.close()
+                return
+            if self.path.endswith(".csv") :
+                f = open(curdir + sep + "stockHistory" + sep + self.path) #self.path has /test.html
+#note that this potentially makes every file on your computer readable by the internet
+
+                self.send_response(200)
+                self.send_header('Content-type',    'text/html')
+                self.end_headers()
+                self.wfile.write(f.read())
+                f.close()
+                return
+
+        except IOError:
+            self.send_error(404,'File Not Found: %s' % self.path)
+
 
 
 
@@ -39,44 +55,45 @@ historyPath = path + "stockHistory/"
 # epoch = datetime.datetime(1970,1,1)
 timeNow = datetime.datetime.now()
 
+stockHistory_js_line1 = "var stocks = [\"None\""
+stockHistory_js_line2 = "var paidVal = [0"
+
 for elem in data['stocks']:
-    x=[]
-    y=[]
     # remove duplicated
     prevLine = ""
     fileName = historyPath + elem['stock'].replace(" ", "_")+".csv"
     origFileName = fileName+".orig"
     shutil.move(fileName, origFileName)
+    firstLine = 1
     with open(origFileName,'rb') as fileRead:
         with open(fileName,'wb') as fileWrite:
             for line in fileRead:
+                if firstLine == 1:
+                    if line != "Date,Value\n":
+                        fileWrite.write("Date,Value\n")
+                    firstLine = 0
                 if line != prevLine:
                     fileWrite.write(line)
                     prevLine = line
-                    xstr = line.split(",")[0]
-                    ystr = line.split(",")[1]
-
-
-                    datetime_object = datetime.datetime.strptime(xstr, '%Y-%m-%d')
-                    # comparing to epoch
-                    # cts = (datetime_object-epoch).total_seconds()
-                    cts = ((datetime_object-timeNow).total_seconds())/(60*60*24)
-                    
-                    # print int(cts)
-                    x.append(int(cts))
-                    y.append(float(ystr))
-                    
-            minx = min(x)
-            # does not seem to handle negative values right
-            x[:] = [a - minx for a in x]
-            miny = min(y)
-            maxy = max(y)
-
-            miny = miny - (maxy-miny)/10
-            maxy = maxy + (maxy-miny)/10
-            print "\n\n\n"
-            print elem['stock']+ "  --------   Paid per stock: " + str(elem['paid']/elem['titles'])
-
-            drawGraph(x, y, marker='x', xlim=[min(x),max(x)], ylim=[miny, maxy])
             
+            stockHistory_js_line1 = stockHistory_js_line1 + ", \"" + elem['stock'].replace(" ", "_") + "\""
+            stockHistory_js_line2 = stockHistory_js_line2 + ", " + str(elem['paid']/elem['titles'])
+
     os.remove(origFileName)
+
+    with open("stockHistory.js", 'wb') as fileWrite:
+        fileWrite.write(stockHistory_js_line1)
+        fileWrite.write("];\n")
+        fileWrite.write(stockHistory_js_line2)
+        fileWrite.write("];\n")
+
+
+try:
+    server = HTTPServer(('', 8080), MyHandler)
+    print 'started httpserver...'
+    server.serve_forever()
+except KeyboardInterrupt:
+    print '^C received, shutting down server'
+    server.socket.close()
+
+
