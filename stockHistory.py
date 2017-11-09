@@ -87,7 +87,7 @@ for elem in data['stocks']:
 stockHistory_js_line1 = rreplace(stockHistory_js_line1, ',', '', 1)
 stockHistory_js_line2 = rreplace(stockHistory_js_line2, ',', '', 1)
 
-with open("stockHistory.js", 'wb') as fileWrite:
+with open(path + "stockHistory.js", 'wb') as fileWrite:
     fileWrite.write(stockHistory_js_line1)
     fileWrite.write("];\n")
     fileWrite.write(stockHistory_js_line2)
