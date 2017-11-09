@@ -9,6 +9,8 @@ import string,cgi,time
 from os import curdir, sep
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
+path = "./"
+
 def rreplace(s, old, new, occurrence):
     li = s.rsplit(old, occurrence)
     return new.join(li)
@@ -19,7 +21,7 @@ class MyHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
             if self.path.endswith(".html") or self.path.endswith(".js") :
-                f = open(curdir + sep + self.path) #self.path has /test.html
+                f = open(path + self.path) #self.path has /test.html
 #note that this potentially makes every file on your computer readable by the internet
 
                 self.send_response(200)
@@ -29,7 +31,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 f.close()
                 return
             if self.path.endswith(".csv") :
-                f = open(curdir + sep + "stockHistory" + sep + self.path) #self.path has /test.html
+                f = open(path + "stockHistory" + sep + self.path) #self.path has /test.html
 #note that this potentially makes every file on your computer readable by the internet
 
                 self.send_response(200)
@@ -45,7 +47,6 @@ class MyHandler(BaseHTTPRequestHandler):
 
 
 
-path = "./"
 if sys.platform == "linux4":
     path = "/storage/emulated/0/qpython/scripts/"
 
