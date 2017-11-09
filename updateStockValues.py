@@ -9,7 +9,7 @@ path = "./"
 if sys.platform == "linux4":
     path = "/storage/emulated/0/qpython/scripts/"
 
-fileList = ["stockValues.py", "stockHistory.py", "updateStockValues.py" ]  
+fileList = ["stockValues.py", "stockHistory.py", "updateStockValues.py", "index.html" ]  
 
 for element in fileList:    
     try:
