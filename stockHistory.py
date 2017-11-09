@@ -9,7 +9,9 @@ import string,cgi,time
 from os import curdir, sep
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
-
+def rreplace(s, old, new, occurrence):
+    li = s.rsplit(old, occurrence)
+    return new.join(li)
 
 
 class MyHandler(BaseHTTPRequestHandler):
@@ -55,8 +57,8 @@ historyPath = path + "stockHistory/"
 # epoch = datetime.datetime(1970,1,1)
 timeNow = datetime.datetime.now()
 
-stockHistory_js_line1 = "var stocks = [\"None\""
-stockHistory_js_line2 = "var paidVal = [0"
+stockHistory_js_line1 = "var stocks = ["
+stockHistory_js_line2 = "var paidVal = ["
 
 for elem in data['stocks']:
     # remove duplicated
@@ -76,16 +78,20 @@ for elem in data['stocks']:
                     fileWrite.write(line)
                     prevLine = line
             
-            stockHistory_js_line1 = stockHistory_js_line1 + ", \"" + elem['stock'].replace(" ", "_") + "\""
-            stockHistory_js_line2 = stockHistory_js_line2 + ", " + str(elem['paid']/elem['titles'])
+            stockHistory_js_line1 = stockHistory_js_line1 + "\"" + elem['stock'].replace(" ", "_") + "\", "
+            stockHistory_js_line2 = stockHistory_js_line2 + str(elem['paid']/elem['titles']) + ", "
 
     os.remove(origFileName)
 
-    with open("stockHistory.js", 'wb') as fileWrite:
-        fileWrite.write(stockHistory_js_line1)
-        fileWrite.write("];\n")
-        fileWrite.write(stockHistory_js_line2)
-        fileWrite.write("];\n")
+# remove the las comma
+stockHistory_js_line1 = rreplace(stockHistory_js_line1, ',', '', 1)
+stockHistory_js_line2 = rreplace(stockHistory_js_line2, ',', '', 1)
+
+with open("stockHistory.js", 'wb') as fileWrite:
+    fileWrite.write(stockHistory_js_line1)
+    fileWrite.write("];\n")
+    fileWrite.write(stockHistory_js_line2)
+    fileWrite.write("];\n")
 
 
 try:
