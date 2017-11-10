@@ -1,3 +1,10 @@
+#qpy:2
+#qpy:webapp:Hello Qpython
+#qpy://localhost:8080/stockHistory
+
+from bottle import Bottle, run
+from bottle import static_file
+
 import json
 import sys
 import os
@@ -10,6 +17,21 @@ from os import curdir, sep
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 path = "./"
+
+app = Bottle()
+
+@app.route('/stockHistory')
+def stockHistory():
+    return static_file("./index.html", root='./')
+
+@app.route('/<filename>')
+def js(filename):
+    if filename.endswith(".js"):
+        print filename
+        return static_file(filename, root='./')
+    if filename.endswith(".csv"):
+        print filename
+        return static_file(filename, root='./stockHistory/')
 
 def rreplace(s, old, new, occurrence):
     li = s.rsplit(old, occurrence)
@@ -95,12 +117,4 @@ with open(path + "stockHistory.js", 'wb') as fileWrite:
     fileWrite.write("];\n")
 
 
-try:
-    server = HTTPServer(('', 8080), MyHandler)
-    print 'started httpserver...'
-    server.serve_forever()
-except KeyboardInterrupt:
-    print '^C received, shutting down server'
-    server.socket.close()
-
-
+run(app, host='localhost', port=8080)
