@@ -22,16 +22,16 @@ app = Bottle()
 
 @app.route('/stockHistory')
 def stockHistory():
-    return static_file("./index.html", root='./')
+    return static_file("./index.html", root=path)
 
 @app.route('/<filename>')
 def js(filename):
     if filename.endswith(".js"):
         print filename
-        return static_file(filename, root='./')
+        return static_file(filename, root=path)
     if filename.endswith(".csv"):
         print filename
-        return static_file(filename, root='./stockHistory/')
+        return static_file(filename, root=path + 'stockHistory/')
 
 def rreplace(s, old, new, occurrence):
     li = s.rsplit(old, occurrence)
