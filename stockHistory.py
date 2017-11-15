@@ -19,6 +19,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 path = "./"
 
 app = Bottle()
+host = '127.0.0.1'
 
 @app.route('/stockHistory')
 def stockHistory():
@@ -71,6 +72,8 @@ class MyHandler(BaseHTTPRequestHandler):
 
 if sys.platform == "linux4":
     path = "/storage/emulated/0/qpython/scripts/"
+else :
+    host = '0.0.0.0'
 
 with open(path + 'stocks.json') as data_file:    
     data = json.load(data_file)
@@ -117,4 +120,4 @@ with open(path + "stockHistory.js", 'wb') as fileWrite:
     fileWrite.write("];\n")
 
 
-run(app, host='localhost', port=8080)
+run(app, host=host, port=8080)
