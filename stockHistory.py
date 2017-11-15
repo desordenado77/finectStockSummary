@@ -1,5 +1,5 @@
 #qpy:2
-#qpy:webapp:Hello Qpython
+#qpy:webapp:stockHistory
 #qpy://localhost:8080/stockHistory
 
 from bottle import Bottle, run
