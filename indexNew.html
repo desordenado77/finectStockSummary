@@ -1,0 +1,159 @@
+<head>
+    <!-- Plotly.js -->
+    <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+    <script type="text/javascript" src="plotly-latest.min.js"></script>
+    <script type="text/javascript" src="jquery.min.js"></script>
+<style>
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+    <center>
+        <label for="progress" style="vertical-align: middle"></label>
+    </center>
+
+    <center> 
+    <table id=table>
+        <tr>
+            <th><p>Name</p></th>
+            <th><p align='right'>Paid</p></th>
+            <th><p align='right'>Value</p></th>
+            <th><p align='right'>Difference</p></th>
+            <th><p align='right'>Graph</p></th>
+        </tr>
+    </table>
+    </center>
+
+    <div id="myDiv">
+        <!-- Plotly chart will be drawn inside this DIV -->
+    </div>
+    <script>
+        $('table').hide();
+        var intervalID = setInterval(function(){
+            $.getJSON("status.json", function(json) {
+                jQuery("label[for='progress']").html("Progress: " + json.status);
+                if(json.status == "Done") {
+                    clearInterval(intervalID);
+
+                    jQuery("label[for='progress']").hide();
+                    $('table').show();
+
+                    $.getJSON("stockValuesArray.json", function(stockValues) {
+                        var tr;
+                        for (var i = 0; i < stockValues.length; i++) {
+                            tr = $('<tr/>');
+                            tr.append("<td><p><b>" + stockValues[i].stock + "</b></p><p>" + stockValues[i].date + "</p></td>");
+                            tr.append("<td><p align='right'>" + stockValues[i].paidTotal.toFixed(2) + "</p><p align='right'>" + stockValues[i].paidPerStock.toFixed(2) + "</p></td>");
+                            tr.append("<td><p align='right'>" + stockValues[i].investmentValue.toFixed(2) + "</p><p align='right'>" + stockValues[i].currValue.toFixed(2) + "</p></td>");
+                            color = "red";
+                            if(stockValues[i].gain > 0) color = "green";
+                            tr.append("<td><p align='right'><font color='" + color +"'>" + stockValues[i].gain.toFixed(2) + "</p><p align='right'>" + stockValues[i].gainPerc.toFixed(2) + "%</p></td>");
+                            tr.append("<td><p align='right'><input type='radio' name='graph' value='" + i + "' onclick='handleClick(this);''></td>");
+
+                            $('table').append(tr);
+                        }
+                    
+                        $.getJSON("totals.json", function(total) {
+
+                            tr = $('<tr/>');
+                            tr.append("<td><p><b>TOTAL:</p><br></td>");
+                            tr.append("<td><p align='right'><b>" + total.paidTotal.toFixed(2) + "</b></p><br></td>");
+                            tr.append("<td><p align='right'><b>" + total.valueTotal.toFixed(2) + "</b></p><br></td>");
+                            color = "red";
+                            if(total.gain > 0) color = "green";
+                            tr.append("<td><p align='right'><b><font color='" + color +"'>" + total.gain.toFixed(2) + "</b></p><p align='right'><b>" + total.gainPerc.toFixed(2) + "%</b></p></td>");
+                            $('table').append(tr);
+                        });
+                    });
+                }
+            });
+        }, 1000);
+
+        //clearInterval(intervalID);
+
+        var lastSelected = 0;
+
+        stocks = {};
+
+        var end1 = $.getJSON("stocks.json", function(json) {
+            stocks = json;
+            console.log(stocks);
+        }),
+            end2 = $.getJSON("paidVal.json", function(json) {
+            paidVal = json;
+            console.log(paidVal);
+        }),
+            all = $.when(end1, end2).done(function() {
+                select = document.getElementById('selectId');
+
+                for (var i = 0; i < stocks.length; i++) {
+                    var opt = document.createElement('option');
+                    opt.value = i;
+                    opt.innerHTML = stocks[i];
+                    select.appendChild(opt);
+                }
+                plotStock(0);
+            });
+
+        function handleClick(myRadio) {
+            plotStock(myRadio.value);
+        }
+
+        function plotStock(num) {
+            lastSelected = num;
+            Name = stocks[num];
+            Plotly.d3.csv(Name + ".csv", function(err, rows) {
+
+                function unpack(rows, key) {
+                    return rows.map(function(row) {
+                        return row[key];
+                    });
+                }
+
+                var trace1 = {
+                    type: "scatter",
+                    mode: "lines",
+                    name: Name,
+                    x: unpack(rows, 'Date'),
+                    y: unpack(rows, 'Value')
+                }
+
+                var len = unpack(rows, 'Value').length
+                var paid = Array(len).fill(paidVal[num])
+
+                var trace2 = {
+                    type: "scatter",
+                    mode: "lines",
+                    name: 'Paid',
+                    x: unpack(rows, 'Date'),
+                    y: paid,
+                }
+                data = [trace1, trace2];
+
+                var layout = {
+                    title: Name,
+                };
+
+                Plotly.newPlot('myDiv', data, layout);
+            });
+        }
+
+    </script>
+</body>
