@@ -36,7 +36,6 @@ th {
             <th><p align='right'>Paid</p></th>
             <th><p align='right'>Value</p></th>
             <th><p align='right'>Difference</p></th>
-            <th><p align='right'>Graph</p></th>
         </tr>
     </table>
     </center>
@@ -79,14 +78,13 @@ th {
                     $.getJSON("stockValuesArray.json", function(stockValues) {
                         var tr;
                         for (var i = 0; i < stockValues.length; i++) {
-                            tr = $('<tr/>');
+                            tr = $("<tr onclick='handleClick(this)' id='" + i +"'/>");
                             tr.append("<td><p><b>" + stockValues[i].stock + "</b></p><p>" + stockValues[i].date + "</p></td>");
                             tr.append("<td><p align='right'>" + stockValues[i].paidTotal.toFixed(2) + "</p><p align='right'>" + stockValues[i].paidPerStock.toFixed(2) + "</p></td>");
                             tr.append("<td><p align='right'>" + stockValues[i].investmentValue.toFixed(2) + "</p><p align='right'>" + stockValues[i].currValue.toFixed(2) + "</p></td>");
                             color = "red";
                             if(stockValues[i].gain > 0) color = "green";
                             tr.append("<td><p align='right'><font color='" + color +"'>" + stockValues[i].gain.toFixed(2) + "</p><p align='right'>" + stockValues[i].gainPerc.toFixed(2) + "%</p></td>");
-                            tr.append("<td><p align='right'><input type='radio' name='graph' value='" + i + "' onclick='handleClick(this);''></td>");
 
                             $('table').append(tr);
                         }
@@ -107,8 +105,8 @@ th {
             });
         }, 1000);
 
-        function handleClick(myRadio) {
-            plotStock(myRadio.value);
+        function handleClick(myTable) {
+            plotStock(myTable.id);
         }
 
         function plotStock(num) {
