@@ -27,9 +27,6 @@ class bcolors:
     YELLOW = '\033[33m'
     ENDC = '\033[0m'
 
-    
-timeDelta = timedelta(days=7)
-
 path = "./"
 
 app = Bottle()
@@ -64,7 +61,6 @@ def getStockValues():
     elements = len(data['stocks'])
 
     for elem in data['stocks']:
-#        time.sleep(5)
         stockValuesJson = {}
         url = elem['url']
 
@@ -150,8 +146,6 @@ def getStockValues():
     totalsJson['gain'] = diffTotal
     totalsJson['gainPerc'] = float((diffTotal*100)/paidTotal)
 
-    timeNow = datetime.now()
-
     for elem in data['stocks']:
         # remove duplicated
         prevLine = ""
@@ -218,18 +212,11 @@ def statusjson():
     response.content_type = 'application/json'
     return json.dumps(statusJson)
 
-def rreplace(s, old, new, occurrence):
-    li = s.rsplit(old, occurrence)
-    return new.join(li)
-
-
 class MyHandler(BaseHTTPRequestHandler):
-
     def do_GET(self):
         try:
             if self.path.endswith(".html") or self.path.endswith(".js") :
-                f = open(path + self.path) #self.path has /test.html
-#note that this potentially makes every file on your computer readable by the internet
+                f = open(path + self.path)
 
                 self.send_response(200)
                 self.send_header('Content-type',    'text/html')
@@ -238,8 +225,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 f.close()
                 return
             if self.path.endswith(".csv") :
-                f = open(path + "stockHistory" + sep + self.path) #self.path has /test.html
-#note that this potentially makes every file on your computer readable by the internet
+                f = open(path + "stockHistory" + sep + self.path)
 
                 self.send_response(200)
                 self.send_header('Content-type',    'text/html')

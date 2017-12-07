@@ -46,28 +46,8 @@ th {
     </div>
     <script>
         $('table').hide();
-        
-        var lastSelected = 0;
 
-        stocks = {};
-
-        var end1 = $.getJSON("stocks.json", function(json) {
-            stocks = json;
-            console.log(stocks);
-        }),
-            end2 = $.getJSON("paidVal.json", function(json) {
-            paidVal = json;
-            console.log(paidVal);
-        }),
-            all = $.when(end1, end2).done(function() {
-                select = document.getElementById('selectId');
-
-                for (var i = 0; i < stocks.length; i++) {
-                    var opt = document.createElement('option');
-                    opt.value = i;
-                    opt.innerHTML = stocks[i];
-                }
-            });
+        var stocks = {};
         
         var intervalID = setInterval(function(){
             $.getJSON("status.json", function(json) {
@@ -75,6 +55,24 @@ th {
                 if(json.status == "Done") {
                     clearInterval(intervalID);
 
+                    var end1 = $.getJSON("stocks.json", function(json) {
+                        stocks = json;
+                        console.log(stocks);
+                    }),
+                        end2 = $.getJSON("paidVal.json", function(json) {
+                        paidVal = json;
+                        console.log(paidVal);
+                    }),
+                        all = $.when(end1, end2).done(function() {
+                            select = document.getElementById('selectId');
+
+                            for (var i = 0; i < stocks.length; i++) {
+                                var opt = document.createElement('option');
+                                opt.value = i;
+                                opt.innerHTML = stocks[i];
+                            }
+                        });
+                        
                     jQuery("label[for='progress']").hide();
                     $('table').show();
 
@@ -114,7 +112,6 @@ th {
         }
 
         function plotStock(num) {
-            lastSelected = num;
             Name = stocks[num];
             Plotly.d3.csv(Name + ".csv", function(err, rows) {
 
