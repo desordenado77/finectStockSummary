@@ -46,6 +46,29 @@ th {
     </div>
     <script>
         $('table').hide();
+        
+        var lastSelected = 0;
+
+        stocks = {};
+
+        var end1 = $.getJSON("stocks.json", function(json) {
+            stocks = json;
+            console.log(stocks);
+        }),
+            end2 = $.getJSON("paidVal.json", function(json) {
+            paidVal = json;
+            console.log(paidVal);
+        }),
+            all = $.when(end1, end2).done(function() {
+                select = document.getElementById('selectId');
+
+                for (var i = 0; i < stocks.length; i++) {
+                    var opt = document.createElement('option');
+                    opt.value = i;
+                    opt.innerHTML = stocks[i];
+                }
+            });
+        
         var intervalID = setInterval(function(){
             $.getJSON("status.json", function(json) {
                 jQuery("label[for='progress']").html("Progress: " + json.status);
@@ -86,32 +109,6 @@ th {
             });
         }, 1000);
 
-        //clearInterval(intervalID);
-
-        var lastSelected = 0;
-
-        stocks = {};
-
-        var end1 = $.getJSON("stocks.json", function(json) {
-            stocks = json;
-            console.log(stocks);
-        }),
-            end2 = $.getJSON("paidVal.json", function(json) {
-            paidVal = json;
-            console.log(paidVal);
-        }),
-            all = $.when(end1, end2).done(function() {
-                select = document.getElementById('selectId');
-
-                for (var i = 0; i < stocks.length; i++) {
-                    var opt = document.createElement('option');
-                    opt.value = i;
-                    opt.innerHTML = stocks[i];
-                    select.appendChild(opt);
-                }
-                plotStock(0);
-            });
-
         function handleClick(myRadio) {
             plotStock(myRadio.value);
         }
@@ -146,9 +143,13 @@ th {
                     y: paid,
                 }
                 data = [trace1, trace2];
-
                 var layout = {
                     title: Name,
+                    showlegend: true,
+                    legend: {
+                        x: 0,
+                        y: 100
+                    }
                 };
 
                 Plotly.newPlot('myDiv', data, layout);
