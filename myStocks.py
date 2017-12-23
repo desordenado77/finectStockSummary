@@ -131,7 +131,18 @@ def getStockValues():
                 print color + "Unable to retrieve values"
                 print bcolors.ENDC + line
 
-        except requests.exceptions.HTTPError as error:
+        except requests.exceptions.HTTPError as error:            
+            stockValuesJson['stock'] = elem['stock']
+            stockValuesJson['paidTotal'] = elem['paid']
+            stockValuesJson['investmentValue'] = 0
+            stockValuesJson['gain'] = 0
+            stockValuesJson['date'] = "1970-1-1"
+            stockValuesJson['paidPerStock'] = 0
+            stockValuesJson['currValue'] = 0
+            stockValuesJson['gainPerc'] = 0
+
+            stockValuesArrayJson.append(stockValuesJson)
+
             print(error.response.status_code, error.response.text)
 
     color = bcolors.RED
