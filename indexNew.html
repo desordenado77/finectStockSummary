@@ -107,6 +107,7 @@ th {
 
         function handleClick(myTable) {
             plotStock(myTable.id);
+            $("html, body").animate({ scrollTop: $(document).height() }, 1000);
         }
 
         function plotStock(num) {
