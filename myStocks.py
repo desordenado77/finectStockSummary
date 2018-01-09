@@ -83,7 +83,6 @@ def getStockValues():
             urlGoogle = elem['urlGoogle']
             theValue = getGoogleValues(urlGoogle)
             datetime_value = datetime_now
-            print "google values " + str(theValue)
         except KeyError as error:
             pass
 
