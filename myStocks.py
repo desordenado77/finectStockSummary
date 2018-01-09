@@ -39,6 +39,18 @@ stockValuesArrayJson = []
 totalsJson = {}
 statusJson = {}
 
+def getGoogleValues(url):
+    response = requests.get(url)
+    response.raise_for_status()
+    strResponse = response.text
+
+    if strResponse.startswith("\n// ") :
+        strResponse = strResponse[3:]
+        jsonResp = json.loads(strResponse)
+        return (jsonResp[0]["l"]).replace(',','')
+
+    return 0
+
 
 
 def getStockValues():    
@@ -59,41 +71,53 @@ def getStockValues():
     diffTotal = 0
     elemCnt = 0
     elements = len(data['stocks'])
+    datetime_now = datetime.now()
 
     for elem in data['stocks']:
         stockValuesJson = {}
         url = elem['url']
+        urlGoogle = ""
+        datetime_value = datetime.strptime("1977-01-01", '%Y-%m-%d')
+        theValue = 0
+        try:
+            urlGoogle = elem['urlGoogle']
+            theValue = getGoogleValues(urlGoogle)
+            datetime_value = datetime_now
+            print "google values " + str(theValue)
+        except KeyError as error:
+            pass
 
         statusJson['status'] = str(elemCnt) + " of " + str(elements)
 
         elemCnt = elemCnt + 1
         
         try:
-            values = []
-            timeNow = datetime.now()
+            if theValue == 0 :
+                values = []
+                timeNow = datetime_now
 
-            while values == [] and (datetime.now()-timeNow)<timedelta(days=45):
-                timeBefore = timeNow - timeDelta
-            
-                myUrl = url + "?startDate=" + str(timeBefore.year) + "-" + str(timeBefore.month) + "-" + str(timeBefore.day) +"&endDate=" + str(timeNow.year) + "-" + str(timeNow.month) + "-" + str(timeNow.day)
-                response = requests.get(myUrl)
-                response.raise_for_status()
+                while values == [] and (datetime_now-timeNow)<timedelta(days=45):
+                    timeBefore = timeNow - timeDelta
+                
+                    myUrl = url + "?startDate=" + str(timeBefore.year) + "-" + str(timeBefore.month) + "-" + str(timeBefore.day) +"&endDate=" + str(timeNow.year) + "-" + str(timeNow.month) + "-" + str(timeNow.day)
+                    response = requests.get(myUrl)
+                    response.raise_for_status()
 
-                values = response.json()
-                timeNow = timeBefore
+                    values = response.json()
+                    timeNow = timeBefore
 
-            if values != []:
-                datetime_value = datetime.strptime("1977-01-01", '%Y-%m-%d')
-                theValue = 0
+                if values != []:
+                    datetime_value = datetime.strptime("1977-01-01", '%Y-%m-%d')
+                    theValue = 0
 
+                    for value in response.json():
+                        new_datetime_value = datetime.strptime(value['date'], '%Y-%m-%d')
+                        new_value = value['value']
+                        if new_datetime_value > datetime_value:
+                            datetime_value = new_datetime_value
+                            theValue = new_value
 
-                for value in response.json():
-                    new_datetime_value = datetime.strptime(value['date'], '%Y-%m-%d')
-                    new_value = value['value']
-                    if new_datetime_value > datetime_value:
-                        datetime_value = new_datetime_value
-                        theValue = new_value
-
+            if theValue != 0 :
                 currentInvestmentValue = float(theValue) * elem['titles']
                 gain = float(theValue) * elem['titles'] - elem['paid']
                 stockPaidPrice = (elem['paid']/elem['titles'])

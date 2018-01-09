@@ -4,25 +4,29 @@
           "stock": "BBVA",
           "titles": 500,
           "paid": 1000,
-          "url": "https://api.finect.com/v2/market/equities/6f254240/prices"
+          "url": "https://api.finect.com/v2/market/equities/6f254240/prices",
+          "urlGoogle": "https://finance.google.com/finance?q=BME:BBVA&output=json"
         },
         {
           "stock": "Iberdrola",
           "titles": 400,
           "paid": 1000.50,
-          "url": "https://api.finect.com/v2/market/equities/6f2cd611/prices"
+          "url": "https://api.finect.com/v2/market/equities/6f2cd611/prices",
+          "urlGoogle": "https://finance.google.com/finance?q=BME:IBE&output=json"
         },
         {
           "stock": "Repsol",
           "titles": 300,
           "paid": 2000.20,
-          "url": "https://api.finect.com/v2/market/equities/6f1ef8a3/prices"
+          "url": "https://api.finect.com/v2/market/equities/6f1ef8a3/prices",
+          "urlGoogle": "https://finance.google.com/finance?q=BME:REP&output=json"
         },
         {
           "stock": "Telefonica",
           "titles": 200,
           "paid": 3000.05,
-          "url": "https://api.finect.com/v2/market/equities/6f2ab4e1/prices"
+          "url": "https://api.finect.com/v2/market/equities/6f2ab4e1/prices",
+          "urlGoogle": "https://finance.google.com/finance?q=BME:TEF&output=json"
         }
     ]
 }
