@@ -272,7 +272,10 @@ class MyHandler(BaseHTTPRequestHandler):
             self.send_error(404,'File Not Found: %s' % self.path)
 
 
-
+# dummy call to avoid the following error:
+#  ImportError: Failed to import _strptime because the import lockis held by another thread.
+# this is as per https://www.raspberrypi.org/forums/viewtopic.php?f=32&t=166912
+datetime.strptime("2016", '%Y')
 
 if sys.platform == "linux4":
     path = "/storage/emulated/0/qpython/scripts/"
