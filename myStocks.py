@@ -51,6 +51,24 @@ def getGoogleValues(url):
 
     return 0
 
+def getAvantageValues(url):
+    response = requests.get(url)
+    response.raise_for_status()
+    strResponse = response.text
+
+    jsonResp = json.loads(strResponse)
+
+    jsonTimeSeries = jsonResp["Time Series (Daily)"]
+    maxdatetime = datetime.strptime("1977-01-01", '%Y-%m-%d')
+    value = 0
+    for elem in jsonTimeSeries:
+        elemdatetime = datetime.strptime(elem, '%Y-%m-%d')
+        if elemdatetime > maxdatetime :
+            maxdatetime = elemdatetime
+            value = jsonTimeSeries[elem]["4. close"]
+
+    return [ value, maxdatetime ]
+
 
 
 def getStockValues():    
@@ -79,12 +97,20 @@ def getStockValues():
         urlGoogle = ""
         datetime_value = datetime.strptime("1977-01-01", '%Y-%m-%d')
         theValue = 0
+
         try:
-            urlGoogle = elem['urlGoogle']
-            theValue = getGoogleValues(urlGoogle)
-            datetime_value = datetime_now
+            urlAvantage = elem['urlAvantage']
+            [ theValue, datetime_value ] = getAvantageValues(urlAvantage)
         except KeyError as error:
             pass
+            
+        if theValue == 0 :
+            try:
+                urlGoogle = elem['urlGoogle']
+                theValue = getGoogleValues(urlGoogle)
+                datetime_value = datetime_now
+            except KeyError as error:
+                pass
 
         statusJson['status'] = str(elemCnt) + " of " + str(elements)
 

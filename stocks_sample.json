@@ -5,28 +5,32 @@
           "titles": 500,
           "paid": 1000,
           "url": "https://api.finect.com/v2/market/equities/6f254240/prices",
-          "urlGoogle": "https://finance.google.com/finance?q=BME:BBVA&output=json"
+          "urlGoogle": "https://finance.google.com/finance?q=BME:BBVA&output=json",
+          "urlAvantage": "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=BBVA.MC&outputsize=compact&apikey=yourkey"
         },
         {
           "stock": "Iberdrola",
           "titles": 400,
           "paid": 1000.50,
           "url": "https://api.finect.com/v2/market/equities/6f2cd611/prices",
-          "urlGoogle": "https://finance.google.com/finance?q=BME:IBE&output=json"
+          "urlGoogle": "https://finance.google.com/finance?q=BME:IBE&output=json",
+          "urlAvantage": "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBE.MC&outputsize=compact&apikey=yourkey"
         },
         {
           "stock": "Repsol",
           "titles": 300,
           "paid": 2000.20,
           "url": "https://api.finect.com/v2/market/equities/6f1ef8a3/prices",
-          "urlGoogle": "https://finance.google.com/finance?q=BME:REP&output=json"
+          "urlGoogle": "https://finance.google.com/finance?q=BME:REP&output=json",
+          "urlAvantage": "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=REP.MC&outputsize=compact&apikey=yourkey"
         },
         {
           "stock": "Telefonica",
           "titles": 200,
           "paid": 3000.05,
           "url": "https://api.finect.com/v2/market/equities/6f2ab4e1/prices",
-          "urlGoogle": "https://finance.google.com/finance?q=BME:TEF&output=json"
+          "urlGoogle": "https://finance.google.com/finance?q=BME:TEF&output=json",
+          "urlAvantage": "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=TEF.MC&outputsize=compact&apikey=yourkey"
         }
     ]
 }
