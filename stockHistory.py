@@ -70,7 +70,7 @@ class MyHandler(BaseHTTPRequestHandler):
 
 
 
-if sys.platform == "linux4":
+if sys.platform == "linux2":
     path = "/storage/emulated/0/qpython/scripts/"
 else :
     host = '0.0.0.0'

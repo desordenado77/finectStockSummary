@@ -348,7 +348,7 @@ class MyHandler(BaseHTTPRequestHandler):
 # this is as per https://www.raspberrypi.org/forums/viewtopic.php?f=32&t=166912
 datetime.strptime("2016", '%Y')
 
-if sys.platform == "linux4":
+if sys.platform == "linux2":
     path = "/storage/emulated/0/qpython/scripts/"
 else :
     host = '0.0.0.0'

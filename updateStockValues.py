@@ -6,7 +6,7 @@ import shutil
 project_url = "https://raw.githubusercontent.com/desordenado77/finectStockSummary/master/"
 
 path = "./"
-if sys.platform == "linux4":
+if sys.platform == "linux2":
     path = "/storage/emulated/0/qpython/scripts/"
 
 fileList = ["stockValues.py", "stockHistory.py", "updateStockValues.py", "index.html", "myStocks.py", "indexNew.html" ]  

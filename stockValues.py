@@ -15,7 +15,7 @@ class bcolors:
 timeDelta = timedelta(days=7)
 
 path = "./"
-if sys.platform == "linux4":
+if sys.platform == "linux2":
     path = "/storage/emulated/0/qpython/scripts/"
 
 with open(path + 'stocks.json') as data_file:    
