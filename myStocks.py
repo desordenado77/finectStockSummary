@@ -70,6 +70,40 @@ def getAvantageValues(url):
     return [ value, maxdatetime ]
 
 
+def getFinectV4(url, datetime_now):
+    timeDelta = timedelta(days=7)
+    values = []
+    timeNow = datetime_now
+
+    while values == [] and (datetime_now-timeNow)<timedelta(days=45):
+        timeBefore = timeNow - timeDelta
+    
+        myUrl = url + "&start=" + str(timeBefore.year) + "-" + str(timeBefore.month) + "-" + str(timeBefore.day) +"&end=" + str(timeNow.year) + "-" + str(timeNow.month) + "-" + str(timeNow.day)
+#        print myUrl
+        response = requests.get(myUrl)
+        response.raise_for_status()
+
+        values = response.json()
+        timeNow = timeBefore
+
+    if values != []:
+        datetime_value = datetime.strptime("1977-01-01", '%Y-%m-%d')
+        theValue = 0
+
+        for value in response.json()['data']:
+#            print value
+            new_datetime_value = datetime.strptime(value['datetime'].split('T')[0], '%Y-%m-%d')
+            new_value = value['price']
+            if new_datetime_value > datetime_value:
+                datetime_value = new_datetime_value
+                theValue = new_value
+
+#    print theValue
+#    print datetime_value
+
+    return [ str(theValue), datetime_value ]
+
+
 
 def getStockValues():    
     timeDelta = timedelta(days=7)
@@ -99,10 +133,21 @@ def getStockValues():
         theValue = 0
 
         try:
-            urlAvantage = elem['urlAvantage']
-            [ theValue, datetime_value ] = getAvantageValues(urlAvantage)
+            urlv4 = elem['urlv4']
+            [ theValue, datetime_value ] = getFinectV4(urlv4, datetime_now)
         except KeyError as error:
             pass
+
+
+        if theValue == 0 :
+            for x in range(0,5):
+                try:
+                    urlAvantage = elem['urlAvantage']
+                    [ theValue, datetime_value ] = getAvantageValues(urlAvantage)
+                    break
+                except KeyError as error:
+                    pass
+                time.sleep(10)
             
         if theValue == 0 :
             try:
