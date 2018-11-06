@@ -83,14 +83,14 @@ def getFinectV4(url, datetime_now):
         response = requests.get(myUrl)
         response.raise_for_status()
 
-        values = response.json()
+        values = response.json()['data']
         timeNow = timeBefore
 
     if values != []:
         datetime_value = datetime.strptime("1977-01-01", '%Y-%m-%d')
         theValue = 0
 
-        for value in response.json()['data']:
+        for value in values:
 #            print value
             new_datetime_value = datetime.strptime(value['datetime'].split('T')[0], '%Y-%m-%d')
             new_value = value['price']
@@ -348,7 +348,7 @@ class MyHandler(BaseHTTPRequestHandler):
 # this is as per https://www.raspberrypi.org/forums/viewtopic.php?f=32&t=166912
 datetime.strptime("2016", '%Y')
 
-if sys.platform == "linux2":
+if sys.platform == "linux4":
     path = "/storage/emulated/0/qpython/scripts/"
 else :
     host = '0.0.0.0'
