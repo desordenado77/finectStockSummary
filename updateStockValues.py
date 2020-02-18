@@ -26,5 +26,5 @@ for element in fileList:
             
         print(element + " Updated")
     except Exception as e: 
-        print(("Error found. Unable to update " + element)
-        print(str(e).encode())
+        print(("Error found. Unable to update " + element))
+        print(str(e))
