@@ -9,7 +9,8 @@ import shutil
 
 import string,cgi,time
 from os import curdir, sep
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+#from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler,HTTPServer
 import threading
 
 import json
@@ -113,9 +114,9 @@ def getStockValues():
         os.makedirs(historyPath)
         
     templateText = "{0:20}|{1:12}|{2:12}|{3:12}" 
-    print templateText.format("Name", " Paid", " Value", " Difference")
+    print(templateText.format("Name", " Paid", " Value", " Difference"))
     line = "-------------------------------------------------------------" 
-    print line
+    print(line)
     template = "{0:20}|{1:12.2f}|{2:12.2f}|{3:12.2f}" 
     templatePerc = "{0:20}|{1:12.2f}|{2:12.2f}|{3:11.2f}%" 
     paidTotal = 0
@@ -197,8 +198,8 @@ def getStockValues():
                 if gain > 0 :
                     color = bcolors.GREEN
                     
-                print color + template.format(elem['stock'], elem['paid'], currentInvestmentValue, gain)
-                print color + templatePerc.format(datetime_value.strftime("%Y-%m-%d"), stockPaidPrice, float(theValue), gainPerc)
+                print(color + template.format(elem['stock'], elem['paid'], currentInvestmentValue, gain))
+                print(color + templatePerc.format(datetime_value.strftime("%Y-%m-%d"), stockPaidPrice, float(theValue), gainPerc))
                 
                 stockValuesJson['stock'] = elem['stock']
                 stockValuesJson['paidTotal'] = elem['paid']
@@ -215,15 +216,15 @@ def getStockValues():
                 valueTotal = valueTotal + float(theValue) * elem['titles']
                 diffTotal = diffTotal + float(theValue) * elem['titles'] - elem['paid']
                 
-                print bcolors.ENDC + line
+                print(bcolors.ENDC + line)
                 
                 with open(historyPath + elem['stock'].replace(" ", "_")+".csv",'ab') as file:
-                    file.write(datetime_value.strftime("%Y-%m-%d") + ","+theValue+'\n')
+                    file.write((datetime_value.strftime("%Y-%m-%d") + ","+theValue+'\n').encode())
             else :
                 color = bcolors.YELLOW
-                print color + elem['stock']
-                print color + "Unable to retrieve values"
-                print bcolors.ENDC + line
+                print (color + elem['stock'])
+                print (color + "Unable to retrieve values")
+                print (bcolors.ENDC + line)
 
         except requests.exceptions.HTTPError as error:            
             stockValuesJson['stock'] = elem['stock']
@@ -242,9 +243,9 @@ def getStockValues():
     color = bcolors.RED
     if diffTotal > 0 :
         color = bcolors.GREEN
-    print color + template.format("TOTAL:", paidTotal, valueTotal, diffTotal)
+    print(color + template.format("TOTAL:", paidTotal, valueTotal, diffTotal))
     templateSummary = "{0:46}|{1:11.2f}%" 
-    print templateSummary.format("      ",float((diffTotal*100)/paidTotal)) + bcolors.ENDC
+    print(templateSummary.format("      ",float((diffTotal*100)/paidTotal)) + bcolors.ENDC)
 
     totalsJson['paidTotal'] = paidTotal
     totalsJson['valueTotal'] = valueTotal
@@ -263,7 +264,7 @@ def getStockValues():
                 for line in fileRead:
                     if firstLine == 1:
                         if line != "Date,Value\n":
-                            fileWrite.write("Date,Value\n")
+                            fileWrite.write(("Date,Value\n").encode())
                         firstLine = 0
                     if line != prevLine:
                         fileWrite.write(line)
@@ -286,10 +287,10 @@ def stockHistory():
 @app.route('/<filename>')
 def js(filename):
     if filename.endswith(".js"):
-        print filename
+        print(filename)
         return static_file(filename, root=path)
     if filename.endswith(".csv"):
-        print filename
+        print(filename)
         return static_file(filename, root=path + 'stockHistory/')
 
 @app.route('/stocks.json')
