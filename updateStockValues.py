@@ -13,18 +13,18 @@ fileList = ["stockValues.py", "stockHistory.py", "updateStockValues.py", "index.
 
 for element in fileList:    
     try:
-        print "attempting to update " + element
+        print("attempting to update " + element)
         
         r = requests.get(project_url+element)
         try:
             shutil.move(path+element, path+"old_"+element)
-        except Exception,e: 
-            print str(e)        
+        except Exception as e: 
+            print(str(e))
             
         with open(path + element, "w") as data_file:    
             data_file.write(r.text)
             
-        print element + " Updated"
-    except Exception,e: 
-        print "Error found. Unable to update " + element
-        print str(e)
+        print(element + " Updated")
+    except Exception as e: 
+        print(("Error found. Unable to update " + element)
+        print(str(e).encode())
