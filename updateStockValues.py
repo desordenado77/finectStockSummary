@@ -2,6 +2,8 @@ import requests
 import sys
 import shutil
 
+# workaround based on https://github.com/qpython-android/qpython3/issues/61
+requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS = "TLS13-CHACHA20-POLY1305-SHA256:TLS13-AES-128-GCM-SHA256:TLS13-AES-256-GCM-SHA384:ECDHE:!COMPLEMENTOFDEFAULT"
 
 project_url = "https://raw.githubusercontent.com/desordenado77/finectStockSummary/master/"
 
