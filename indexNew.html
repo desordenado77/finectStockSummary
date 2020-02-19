@@ -32,10 +32,10 @@ th {
     <center> 
     <table id=table>
         <tr>
-            <th><p>Name</p></th>
-            <th><p align='right'>Paid</p></th>
-            <th><p align='right'>Value</p></th>
-            <th><p align='right'>Difference</p></th>
+            <th><p><font size=5>Name</p></th>
+            <th><p align='right'><font size=5>Paid</p></th>
+            <th><p align='right'><font size=5>Value</p></th>
+            <th><p align='right'><font size=5>Difference</p></th>
         </tr>
     </table>
     </center>
@@ -79,12 +79,12 @@ th {
                         var tr;
                         for (var i = 0; i < stockValues.length; i++) {
                             tr = $("<tr onclick='handleClick(this)' id='" + i +"'/>");
-                            tr.append("<td><p><b>" + stockValues[i].stock + "</b></p><p>" + stockValues[i].date + "</p></td>");
-                            tr.append("<td><p align='right'>" + stockValues[i].paidTotal.toFixed(2) + "</p><p align='right'>" + stockValues[i].paidPerStock.toFixed(2) + "</p></td>");
-                            tr.append("<td><p align='right'>" + stockValues[i].investmentValue.toFixed(2) + "</p><p align='right'>" + stockValues[i].currValue.toFixed(2) + "</p></td>");
+                            tr.append("<td><p><b><font size=5>" + stockValues[i].stock + "</b></p><p>" + stockValues[i].date + "</p></td>");
+                            tr.append("<td><p align='right'><font size=5>" + stockValues[i].paidTotal.toFixed(2) + "</p><p align='right'>" + stockValues[i].paidPerStock.toFixed(2) + "</p></td>");
+                            tr.append("<td><p align='right'><font size=5>" + stockValues[i].investmentValue.toFixed(2) + "</p><p align='right'>" + stockValues[i].currValue.toFixed(2) + "</p></td>");
                             color = "red";
                             if(stockValues[i].gain > 0) color = "green";
-                            tr.append("<td><p align='right'><font color='" + color +"'>" + stockValues[i].gain.toFixed(2) + "</p><p align='right'>" + stockValues[i].gainPerc.toFixed(2) + "%</p></td>");
+                            tr.append("<td><p align='right'><font color='" + color +"' size=5>" + stockValues[i].gain.toFixed(2) + "</p><p align='right'>" + stockValues[i].gainPerc.toFixed(2) + "%</p></td>");
 
                             $('table').append(tr);
                         }
@@ -92,12 +92,12 @@ th {
                         $.getJSON("totals.json", function(total) {
 
                             tr = $('<tr/>');
-                            tr.append("<td><p><b>TOTAL:</p><br></td>");
-                            tr.append("<td><p align='right'><b>" + total.paidTotal.toFixed(2) + "</b></p><br></td>");
-                            tr.append("<td><p align='right'><b>" + total.valueTotal.toFixed(2) + "</b></p><br></td>");
+                            tr.append("<td><p><b><font size=5>TOTAL:</p><br></td>");
+                            tr.append("<td><p align='right'><font size=5><b>" + total.paidTotal.toFixed(2) + "</b></p><br></td>");
+                            tr.append("<td><p align='right'><font size=5><b>" + total.valueTotal.toFixed(2) + "</b></p><br></td>");
                             color = "red";
                             if(total.gain > 0) color = "green";
-                            tr.append("<td><p align='right'><b><font color='" + color +"'>" + total.gain.toFixed(2) + "</b></p><p align='right'><b>" + total.gainPerc.toFixed(2) + "%</b></p></td>");
+                            tr.append("<td><p align='right'><b><font color='" + color +"' size=5>" + total.gain.toFixed(2) + "</b></p><p align='right'><b>" + total.gainPerc.toFixed(2) + "%</b></p></td>");
                             $('table').append(tr);
                         });
                     });
