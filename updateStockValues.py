@@ -7,7 +7,7 @@ requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS = "TLS13-CHACHA20-POLY1305-S
 
 project_url = "https://raw.githubusercontent.com/desordenado77/finectStockSummary/master/"
 
-path = "./scripts"
+path = "./scripts/"
 if sys.platform == "linux2":
     path = "/storage/emulated/0/qpython/scripts/"
 

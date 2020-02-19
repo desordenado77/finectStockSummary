@@ -31,7 +31,7 @@ class bcolors:
     YELLOW = '\033[33m'
     ENDC = '\033[0m'
 
-path = "./scripts"
+path = "./scripts/"
 
 app = Bottle()
 host = '127.0.0.1'
