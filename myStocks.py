@@ -21,6 +21,9 @@ from datetime import datetime
 import sys
 import os
 
+# workaround based on https://github.com/qpython-android/qpython3/issues/61
+requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS = "TLS13-CHACHA20-POLY1305-SHA256:TLS13-AES-128-GCM-SHA256:TLS13-AES-256-GCM-SHA384:ECDHE:!COMPLEMENTOFDEFAULT"
+
 
 class bcolors:
     GREEN = '\033[92m'
@@ -28,7 +31,7 @@ class bcolors:
     YELLOW = '\033[33m'
     ENDC = '\033[0m'
 
-path = "./"
+path = "./scripts"
 
 app = Bottle()
 host = '127.0.0.1'
